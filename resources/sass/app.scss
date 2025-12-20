@@ -10,7 +10,7 @@
 /* LOGIN PAGE */
 .login-wrapper {
     min-height: 100vh;
-    background: linear-gradient(135deg, #f8fafc, #eef2ff);
+    background: linear-gradient(135deg, #0178ee, #b20ccb);
 }
 
 .login-card {
@@ -66,3 +66,17 @@
     background: #dee2e6;
     z-index: -1;
 }
+html, body {
+    height: 100%;
+}
+
+#app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+    
