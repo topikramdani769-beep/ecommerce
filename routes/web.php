@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
@@ -14,6 +13,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -70,6 +71,11 @@ Route::middleware(['auth', 'admin'])
 
     // Kategori CRUD
     Route::resource('categories', AdminCategoryController::class);
+
+    Route::resource('categories', CategoryController::class)->except(['show']); // Kategori biasanya tidak butuh show detail page
+
+    // Produk
+    Route::resource('products', ProductController::class);
 
     // Manajemen Pesanan
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
