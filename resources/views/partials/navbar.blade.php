@@ -7,9 +7,10 @@
     <div class="container">
         {{-- Logo & Brand --}}
         <a class="navbar-brand text-dark" href="{{ route('home') }}">
-            <i class="bi bi-bag-heart-fill me-2"></i>
+            <i class="bi bi-bag-fill me-2"></i>
             Sanchéz Dé  Laraché 
         </a>
+        
 
         {{-- Mobile Toggle --}}
         <button class="navbar-toggler" type="button"
@@ -97,7 +98,7 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item text-primary" href="{{ route('admin.dashboard') }}">
-                                        <i class="bi bi-speedometer2 me-2"></i> Admin Panel
+                                        <i class="bi bi-speedometer2 me-2"></i> Pengaturan Admin
                                     </a>
                                 </li>
                             @endif
