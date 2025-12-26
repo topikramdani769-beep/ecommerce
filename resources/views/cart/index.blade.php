@@ -102,7 +102,7 @@
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span class="text-muted">Estimasi Pajak</span>
-                                <span class="fw-bold text-dark">Included</span>
+                                <span class="fw-bold text-dark">Total Barang</span>
                             </div>
                             
                             <hr class="my-4 border-light">

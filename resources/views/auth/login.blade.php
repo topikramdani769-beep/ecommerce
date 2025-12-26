@@ -1,71 +1,125 @@
-{{-- ======================================== FILE:
-resources/views/auth/login.blade.php FUNGSI: Halaman form login
-======================================== --}} @extends('layouts.app') {{-- ↑
-Menggunakan layout dari layouts/app.blade.php Halaman ini akan "masuk" ke bagian
-@yield('content') --}} @section('content') {{-- ↑ Mulai section yang akan
-ditampilkan di @yield('content') --}}
+{{-- ======================================== 
+FILE: resources/views/auth/login.blade.php 
+FUNGSI: Halaman form login versi E-commerce Modern
+======================================== --}} 
+@extends('layouts.app') 
 
-<div class="container">
+@section('content')
+<style>
+    /* Custom CSS untuk Tampilan E-commerce */
+    body {
+        background-color: #f4f7f9; /* Background abu muda bersih */
+    }
+    .login-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+    }
+    .card-header {
+        background: transparent !important;
+        border-bottom: none !important;
+        padding-top: 40px !important;
+    }
+    .card-header h4 {
+        font-weight: 800;
+        color: #2d3436;
+        letter-spacing: -0.5px;
+    }
+    .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #636e72;
+        margin-bottom: 8px;
+    }
+    .form-control {
+        padding: 12px 16px;
+        border-radius: 10px;
+        border: 1px solid #dfe6e9;
+        background-color: #fbfbfb;
+        transition: all 0.2s;
+    }
+    .form-control:focus {
+        background-color: #fff;
+        border-color: #3498db;
+        box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+    }
+    .btn-login-primary {
+        background: #2d3436; /* Warna gelap elegan */
+        color: white;
+        border: none;
+        padding: 14px;
+        font-weight: 700;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+    .btn-login-primary:hover {
+        background: #000;
+        transform: translateY(-2px);
+    }
+    .btn-google {
+        border: 1px solid #dfe6e9;
+        background: white;
+        color: #2d3436;
+        padding: 12px;
+        font-weight: 600;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .btn-google:hover {
+        background: #f8f9fa;
+        border-color: #b2bec3;
+    }
+    .register-link {
+        color: #3498db;
+        font-weight: 700;
+        text-decoration: none;
+    }
+</style>
+
+<div class="container mt-5">
   <div class="row justify-content-center">
-    {{-- ↑ justify-content-center = posisikan di tengah horizontal --}}
-
-    <div class="col-md-6">
-      {{-- ↑ col-md-6 = lebar 50% di layar medium ke atas --}}
-
-      <div class="card shadow-sm">
+    <div class="col-md-5">
+      <div class="card login-card">
         {{-- Card Header --}}
-        <div class="card-header bg-info text-white text-center">
-          <h4 class="mb-0"> Login ke Akun Anda</h4>
+        <div class="card-header text-center">
+          <h4 class="mb-1">Selamat Datang</h4>
+          <p class="text-muted small">Silakan masuk ke akun belanja Anda</p>
         </div>
 
-        <div class="card-body p-4">
-          {{-- ================================================ FORM LOGIN
-          ================================================ method="POST" = Kirim
-          data secara aman (tidak terlihat di URL) action = URL tujuan submit
-          form ================================================ --}}
+        <div class="card-body p-4 pt-2">
           <form method="POST" action="{{ route('login') }}">
-            {{-- ================================================ CSRF TOKEN
-            ================================================ @csrf WAJIB ada di
-            setiap form POST/PUT/DELETE Ini adalah proteksi keamanan dari
-            Laravel ================================================ --}} @csrf
-            {{-- ================== FIELD EMAIL ================== --}}
+            @csrf
+
+            {{-- FIELD EMAIL --}}
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
-
-              <input id="email" type="email" class="form-control @error('email')
-              is-invalid @enderror" {{-- ↑ @error('email') = jika ada error pada
-              field email, tambahkan class 'is-invalid' untuk styling merah --}}
-              name="email" value="{{ old('email') }}" {{-- ↑ old('email') = isi
-              kembali nilai sebelumnya jika form gagal validasi --}} required
-              autocomplete="email" autofocus placeholder="nama@email.com"> {{--
-              Tampilkan pesan error jika ada --}} @error('email')
+              <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" 
+              name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="contoh: budi@email.com">
+              
+              @error('email')
               <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
               </span>
               @enderror
             </div>
 
-            {{-- ================== FIELD PASSWORD ================== --}}
+            {{-- FIELD PASSWORD --}}
             <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
+              <div class="d-flex justify-content-between">
+                <label for="password" class="form-label">Password</label>
+                @if (Route::has('password.request'))
+                <a class="small text-decoration-none mb-2" href="{{ route('password.request') }}">
+                    Lupa Password?
+                </a>
+                @endif
+              </div>
 
-              <input
-                id="password"
-                type="password"
-                {{--
-                ↑
-                type="password"
-                ="karakter"
-                akan
-                disembunyikan
-                (●●●●)
-                --}}
-                class="form-control @error('password') is-invalid @enderror"
-                name="password"
-                required
-                autocomplete="current-password"
-                placeholder="••••••••"
-              />
+              <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
+                name="password" required autocomplete="current-password" placeholder="Minimal 8 karakter">
 
               @error('password')
               <span class="invalid-feedback" role="alert">
@@ -74,79 +128,53 @@ ditampilkan di @yield('content') --}}
               @enderror
             </div>
 
-            {{-- ================== CHECKBOX REMEMBER ME ================== --}}
-            <div class="mb-3 form-check">
-              <input class="form-check-input" type="checkbox" name="remember"
-              id="remember" {{ old('remember') ? 'checked' : '' }}> {{-- ↑ Jika
-              sebelumnya dicentang, tetap centang --}}
-
-              <label class="form-check-label" for="remember">
-                Ingat Saya
+            {{-- CHECKBOX REMEMBER ME --}}
+            <div class="mb-4 form-check">
+              <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+              <label class="form-check-label small text-muted" for="remember">
+                Biarkan saya tetap masuk
               </label>
             </div>
-            {{-- ↑ "Ingat Saya" = Simpan session lebih lama (tidak logout
-            otomatis) --}} {{-- ================== TOMBOL SUBMIT
-            ================== --}}
+
+            {{-- TOMBOL SUBMIT --}}
             <div class="d-grid gap-2">
-              {{-- ↑ d-grid = display grid, membuat button full width --}}
-              <button type="submit" class="btn btn-primary btn-lg">
-                Login
+              <button type="submit" class="btn btn-login-primary">
+                Masuk Ke Akun
               </button>
             </div>
 
-            {{-- ================== LINK LUPA PASSWORD ================== --}}
-            <div class="mt-3 text-center">
-              @if (Route::has('password.request'))
-              <a
-                class="text-decoration-none"
-                href="{{ route('password.request') }}"
-              >
-                Lupa Password?
-              </a>
-              @endif
+            <div class="position-relative my-4">
+                <hr>
+                <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">atau</span>
             </div>
 
-           <hr class="my-4" />
-{{-- ↑ Garis pemisah --}} {{-- ================================================
-TOMBOL LOGIN DENGAN GOOGLE ================================================ --}}
-<div class="d-grid gap-2">
-  <a href="{{ route('auth.google') }}" class="btn btn-outline-primary btn-lg">
-    {{-- ↑ route('auth.google') = URL /auth/google btn-outline-danger = warna
-    merah (Google brand) --}} {{-- Google Icon SVG --}}
-    <svg class="me-2" width="20" height="20" viewBox="0 0 24 24">
-      <path
-        fill="#4285F4"
-        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-      />
-      <path
-        fill="#EA4335"
-        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-      />
-    </svg>
+            {{-- TOMBOL GOOGLE --}}
+            <div class="d-grid gap-2">
+              <a href="{{ route('auth.google') }}" class="btn btn-google">
+                <svg class="me-2" width="18" height="18" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Masuk dengan Google
+              </a>
+            </div>
 
-    Login dengan Google
-  </a>
-</div>
-
-{{-- Teks alternatif register --}}
-        <p class="mt-4 text-center mb-0">
-          Belum punya akun?
-          <a href="{{ route('register') }}" class="text-decoration-none fw-bold">
-            Daftar Sekarang
-          </a>
-        </p>
+            {{-- FOOTER REGISTER --}}
+            <p class="mt-4 text-center small text-muted">
+              Baru di toko kami? 
+              <a href="{{ route('register') }}" class="register-link">
+                Daftar Sekarang
+              </a>
+            </p>
           </form>
         </div>
+      </div>
+      <div class="text-center mt-4">
+          <small class="text-muted">&copy; {{ date('Y') }} Toko Online Anda. Seluruh Hak Cipta.</small>
       </div>
     </div>
   </div>
 </div>
-@endsection {{-- ↑ Akhir dari section content --}}
+@endsection
