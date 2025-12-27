@@ -1,8 +1,3 @@
-{{-- ================================================
-     FILE: resources/views/partials/navbar.blade.php
-     FUNGSI: Navigation bar untuk customer (MODERN VERSION)
-     ================================================ --}}
-
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
     <div class="container">
         {{-- Logo & Brand --}}

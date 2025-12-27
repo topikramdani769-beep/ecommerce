@@ -1,64 +1,56 @@
+{{-- resources/views/orders/show.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
-
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
+        <div class="col-md-9">
 
-            <div class="card shadow-sm">
+            {{-- Breadcrumb / Header --}}
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">Detail Pesanan</li>
+                </ol>
+            </nav>
 
+            <div class="card shadow-sm border-0">
                 {{-- Header Order --}}
-                <div class="card-header bg-white border-bottom">
-                    <div class="d-flex justify-content-between align-items-start">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h1 class="h3 mb-1 fw-bold text-dark">
-                                Order #{{ $order->order_number }}
-                            </h1>
-                            <p class="text-muted mb-0">
-                                {{ $order->created_at->format('d M Y, H:i') }}
-                            </p>
+                            <h4 class="mb-0 fw-bold">Order #{{ $order->order_number }}</h4>
+                            <small class="text-muted">{{ $order->created_at->format('d M Y, H:i') }}</small>
                         </div>
 
-                        {{-- Status Badge --}}
-                        <span class="badge rounded-pill fs-6 px-4 py-2
-                            @switch($order->status)
-                                @case('pending')
-                                    bg-warning text-dark
-                                    @break
-                                @case('processing')
-                                    bg-primary text-white
-                                    @break
-                                @case('shipped')
-                                    bg-info text-white
-                                    @break
-                                @case('delivered')
-                                    bg-success text-white
-                                    @break
-                                @case('cancelled')
-                                    bg-danger text-white
-                                    @break
-                                @default
-                                    bg-secondary text-white
-                            @endswitch
-                        ">
+                        {{-- Status Badge Bootstrap --}}
+                        @php
+                            $statusClasses = [
+                                'pending'    => 'bg-warning text-dark',
+                                'processing' => 'bg-primary',
+                                'shipped'    => 'bg-info text-white',
+                                'delivered'  => 'bg-success',
+                                'cancelled'  => 'bg-danger',
+                            ];
+                            $badgeClass = $statusClasses[$order->status] ?? 'bg-secondary';
+                        @endphp
+                        <span class="badge rounded-pill {{ $badgeClass }} px-3 py-2">
                             {{ ucfirst($order->status) }}
                         </span>
                     </div>
                 </div>
 
-                {{-- Detail Items --}}
-                <div class="card-body">
-                    <h3 class="h5 fw-semibold mb-4">Produk yang Dipesan</h3>
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Produk yang Dipesan</h5>
 
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table align-middle">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="border-0">Produk</th>
-                                    <th class="border-0 text-center">Qty</th>
-                                    <th class="border-0 text-end">Harga</th>
-                                    <th class="border-0 text-end">Subtotal</th>
+                                    <th>Produk</th>
+                                    <th class="text-center">Qty</th>
+                                    <th class="text-end">Harga</th>
+                                    <th class="text-end">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,32 +58,22 @@
                                 <tr>
                                     <td>{{ $item->product_name }}</td>
                                     <td class="text-center">{{ $item->quantity }}</td>
-                                    <td class="text-end">
-                                        Rp {{ number_format($item->discount_price ?? $item->price, 0, ',', '.') }}
-                                    </td>
-                                    <td class="text-end">
-                                        Rp {{ number_format($item->subtotal, 0, ',', '.') }}
-                                    </td>
+                                    <td class="text-end">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                                    <td class="text-end">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
-                            <tfoot class="border-top border-3">
+                            <tfoot class="border-top">
                                 @if($order->shipping_cost > 0)
                                 <tr>
-                                    <td colspan="3" class="pt-3 text-end">Ongkos Kirim:</td>
-                                    <td class="pt-3 text-end">
-                                        Rp {{ number_format($order->shipping_cost, 0, ',', '.') }}
-                                    </td>
+                                    <td colspan="3" class="text-end pt-3">Ongkos Kirim:</td>
+                                    <td class="text-end pt-3">Rp {{ number_format($order->shipping_cost, 0, ',', '.') }}</td>
                                 </tr>
                                 @endif
                                 <tr>
-                                    <td colspan="3" class="pt-3 text-end">
-                                        <strong class="h5 mb-0">TOTAL BAYAR:</strong>
-                                    </td>
-                                    <td class="pt-3 text-end">
-                                        <strong class="h4 mb-0 text-primary">
-                                            Rp {{ number_format($order->total_amount, 0, ',', '.') }}
-                                        </strong>
+                                    <td colspan="3" class="text-end fw-bold fs-5">TOTAL BAYAR:</td>
+                                    <td class="text-end fw-bold fs-5 text-primary">
+                                        Rp {{ number_format($order->total_amount, 0, ',', '.') }}
                                     </td>
                                 </tr>
                             </tfoot>
@@ -100,74 +82,64 @@
                 </div>
 
                 {{-- Alamat Pengiriman --}}
-                <div class="card-body bg-light border-top">
-                    <h3 class="h5 fw-semibold mb-3">Alamat Pengiriman</h3>
-                    <address class="mb-0">
-                        <strong>{{ $order->shipping_name }}</strong><br>
-                        {{ $order->shipping_phone }}<br>
-                        {{ $order->shipping_address }}
-                    </address>
+                <div class="card-footer bg-light p-4 border-top-0">
+                    <h5 class="fw-bold mb-3">Alamat Pengiriman</h5>
+                    <div class="text-dark">
+                        <p class="mb-1 fw-bold">{{ $order->shipping_name }}</p>
+                        <p class="mb-1 text-muted">{{ $order->shipping_phone }}</p>
+                        <p class="mb-0">{{ $order->shipping_address }}</p>
+                    </div>
                 </div>
 
-                {{-- Tombol Bayar (hanya jika pending) --}}
-                @if($order->status === 'pending' && $order->snap_token)
-                <div class="card-body bg-primary bg-opacity-10 border-top text-center">
-                    <p class="text-muted mb-4">
-                        Selesaikan pembayaran Anda sebelum batas waktu berakhir.
-                    </p>
-                    <button id="pay-button" class="btn btn-primary btn-lg px-5 shadow-sm">
-                        <i class="bi bi-credit-card me-2"></i> Bayar Sekarang
+                {{-- Tombol Bayar --}}
+                @if($order->status === 'pending' && isset($snapToken))
+                <div class="card-body p-4 bg-primary bg-opacity-10 border-top text-center">
+                    <p class="text-muted mb-3">Selesaikan pembayaran Anda sekarang.</p>
+                    <button id="pay-button" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">
+                        💳 Bayar Sekarang
                     </button>
                 </div>
                 @endif
-
             </div>
         </div>
     </div>
 </div>
-
-{{-- Snap.js Integration --}}
-@if($order->snap_token)
-@push('scripts')
-{{-- Load Snap JS dari Midtrans --}}
-<script src="{{ config('midtrans.snap_url') }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
-
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        const payButton = document.getElementById('pay-button');
-
-        if (payButton) {
-            payButton.addEventListener('click', function () {
-                // Disable button untuk mencegah double click
-                payButton.disabled = true;
-                payButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Memproses...';
-
-                window.snap.pay('{{ $order->snap_token }}', {
-                    onSuccess: function (result) {
-                        console.log('Payment Success:', result);
-                        window.location.href = '{{ route("orders.success", $order) }}';
-                    },
-                    onPending: function (result) {
-                        console.log('Payment Pending:', result);
-                        window.location.href = '{{ route("orders.pending", $order) }}';
-                    },
-                    onError: function (result) {
-                        console.log('Payment Error:', result);
-                        alert('Pembayaran gagal! Silakan coba lagi.');
-                        payButton.disabled = false;
-                        payButton.innerHTML = '<i class="bi bi-credit-card me-2"></i> Bayar Sekarang';
-                    },
-                    onClose: function () {
-                        console.log('Payment popup closed');
-                        payButton.disabled = false;
-                        payButton.innerHTML = '<i class="bi bi-credit-card me-2"></i> Bayar Sekarang';
-                    }
-                });
-            });
-        }
-    });
-</script>
-@endpush
-@endif
-
 @endsection
+
+@push('scripts')
+    @if(isset($snapToken))
+        {{-- Load Snap JS --}}
+        <script src="{{ config('midtrans.snap_url') }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
+
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                const payButton = document.getElementById('pay-button');
+
+                if (payButton) {
+                    payButton.addEventListener('click', function() {
+                        payButton.disabled = true;
+                        payButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+
+                        window.snap.pay('{{ $snapToken }}', {
+                            onSuccess: function(result) {
+                                window.location.href = '{{ route("orders.success", $order) }}';
+                            },
+                            onPending: function(result) {
+                                window.location.href = '{{ route("orders.pending", $order) }}';
+                            },
+                            onError: function(result) {
+                                alert('Pembayaran gagal!');
+                                payButton.disabled = false;
+                                payButton.innerHTML = '💳 Bayar Sekarang';
+                            },
+                            onClose: function() {
+                                payButton.disabled = false;
+                                payButton.innerHTML = '💳 Bayar Sekarang';
+                            }
+                        });
+                    });
+                }
+            });
+        </script>
+    @endif
+@endpush

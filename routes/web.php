@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
@@ -12,32 +13,41 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
-use App\Services\MidtransService;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\MidtransNotificationController;
 
 
-Route::get('/', function () {
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+
+Route::get('/', function(){
     return view('welcome');
 });
 
-Route::get('tentang', function(){
+Route::get('tentang', function () {
     return view('tentang');
 });
 
-Route::get('sapa/{nama}', function($nama){
-    return "Hallo, $nama! Selamat Datang di toko online.";
-});
-Route::get('kategori/{nama?}', function($nama= "Semua"){
-    return "Menampilkan Kategori : $nama .";
+Route::get('/sapa/{nama}', function($nama){
+    return "hallo, $nama! selamat datang yah awokawokawokawok,";
 });
 
-Route::get('produk/{id}', function ($id){
-    return "Detail Produk #$id .";
+Route::get('/kategori/{nama?}', function ($nama = 'kaceng'){
+    return "Menampilkan kategori: $nama";
+});
+
+Route::get('/produk/{id}', function ($id) {
+    return "Detail produk #$id";
 })->name('produk.detail');
+
 Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware('auth')->group(function () {
     // Semua route di dalam group ini HARUS LOGIN
@@ -54,38 +64,6 @@ Route::middleware('auth')->group(function () {
         ->name('profile.update');
 });
 
-Route::middleware(['auth', 'admin'])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
-
-        // /admin/dashboard
-        Route::get('/dashboard', [DashboardController::class, 'dashboard'])
-            ->name('dashboard');
-        // ↑ Nama lengkap route: admin.dashboard
-        // ↑ URL: /admin/dashboard
-
-        // CRUD Produk: /admin/products, /admin/products/create, dll
-        Route::resource('/products', ProductController::class);
-    Route::get('/', [AdminProductController::class, 'index'])->name('dashboard');
-
-    // Produk CRUD
-    Route::resource('products', AdminProductController::class);
-
-    // Kategori CRUD
-    Route::resource('categories', AdminCategoryController::class);
-
-    Route::resource('categories', CategoryController::class)->except(['show']); // Kategori biasanya tidak butuh show detail page
-
-    // Produk
-    Route::resource('products', ProductController::class);
-
-    // Manajemen Pesanan
-    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
-    Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
-});
-
 Route::controller(GoogleController::class)->group(function () {
     // ================================================
     // ROUTE 1: REDIRECT KE GOOGLE
@@ -95,7 +73,8 @@ Route::controller(GoogleController::class)->group(function () {
     // ================================================
     Route::get('/auth/google', 'redirect')
         ->name('auth.google');
-     // ================================================
+
+    // ================================================
     // ROUTE 2: CALLBACK DARI GOOGLE
     // ================================================
     // URL: /auth/google/callback
@@ -106,7 +85,6 @@ Route::controller(GoogleController::class)->group(function () {
         ->name('auth.google.callback');
 });
 
-// routes/web.php
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -114,6 +92,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.destroy');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+});
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Katalog Produk
+Route::get('/products', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/products/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
+
+
+// ================================================
+// HALAMAN YANG BUTUH LOGIN (Customer)
+// ================================================
+
+Route::middleware('auth')->group(function () {
+    // Keranjang Belanja
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
@@ -137,12 +130,39 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Katalog Produk
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard
+    Route::get('/', [DashboardController::class, 'Dashboard'])->name('dashboard');
+    // Produk CRUD
+    Route::resource('products', AdminProductController::class);
+    // Kategori CRUD
+   Route::resource('categories', CategoryController::class);
+
+
+
+
+    // Manajemen Pesanan
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+});
+Auth::routes();
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/products/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
-Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+Route::middleware('auth')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{item}', [CartController::class, 'remove'])->name('cart.remove');
+});
+
+route::get('dashboard', function(){
+    return view('layouts.partials.content');
+})->name('dashboard.admin');
 
 Route::middleware('auth')->group(function () {
     // ... routes lainnya
@@ -155,3 +175,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order}/pending', [PaymentController::class, 'pending'])
         ->name('orders.pending');
 });
+
+
+Route::post('midtrans/notification', [MidtransNotificationController::class, 'handle'])
+    ->name('midtrans.notification');
+    
