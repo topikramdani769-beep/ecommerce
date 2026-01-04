@@ -17,13 +17,13 @@
               <span class="hide-menu">Home</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="dashboard" aria-expanded="false">
-                <span>
-                  <i class="ti ti-layout-dashboard"></i>
-                </span>
-                <span class="hide-menu">Dashboard</span>
-              </a>
-            </li>
+            <a class="sidebar-link" href="{{ route('admin.dashboard') }}" aria-expanded="false">
+              <span>
+            <i class="ti ti-layout-dashboard"></i>
+             </span>
+              <span class="hide-menu">Dashboard</span>
+            </a>
+          </li>
           <li class="sidebar-item">
             <a class="sidebar-link" href="{{ route('admin.products.index') }}" aria-expanded="false">
               <span>
@@ -42,13 +42,21 @@
             </a>
           </li>
           <li class="sidebar-item">
-            <a class="sidebar-link" href="{{ url('') }}" aria-expanded="false">
+            <a class="sidebar-link" href="{{ route('admin.orders.index') }}" aria-expanded="false">
               <span>
-                <i class="ti ti-category"></i>
+                <i class="ti ti-list-check"></i> 
               </span>
               <span class="hide-menu">Pesanan</span>
             </a>
           </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="{{ route('admin.reports.sales') }}" aria-expanded="false">
+                <span>
+                    <i class="ti ti-file-description"></i>
+                </span>
+                <span class="hide-menu">Laporan Penjualan</span>
+            </a>
+        </li>
         </nav>
         <!-- End Sidebar navigation -->
       </div>

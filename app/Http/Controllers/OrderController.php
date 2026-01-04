@@ -29,19 +29,48 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        // 1. Authorize (Security Check)
-        // User A TIDAK BOLEH melihat pesanan User B.
-        // Kita cek apakah ID pemilik order sama dengan ID user yang login.
-        if ($order->user_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
-        }
-
-        // 2. Load relasi detail
-        // Kita butuh data items dan gambar produknya untuk ditampilkan di invoice view.
-        $order->load(['items.product', 'items.product.primaryImage']);
-
-        return view('orders.show', compact('order'));
+    // 1. Cek keamanan akses
+    if ($order->user_id !== auth()->id()) {
+        abort(403, 'Akses ditolak.');
     }
+
+    // 2. Load detail produk
+    $order->load(['items.product']);
+
+    // 3. Inisialisasi token
+    $snapToken = null;
+
+    // 4. Minta token ke Midtrans jika status masih pending
+    if ($order->status === 'pending') {
+        // Set konfigurasi dari file config/midtrans.php
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('midtrans.is_production');
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order->order_number,
+                'gross_amount' => (int) $order->total_amount,
+            ],
+            'customer_details' => [
+                'first_name' => auth()->user()->name,
+                'email' => auth()->user()->email,
+            ],
+        ];
+
+        try {
+            // Membuat Snap Token
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+        } catch (\Exception $e) {
+            // Jika gagal (misal server key salah), biarkan snapToken null
+            // Anda bisa log errornya: logger($e->getMessage());
+        }
+    }
+
+    // 5. Kirim data ke view
+    return view('orders.show', compact('order', 'snapToken'));
+}
 
     /**
      * Menampilkan halaman status pembayaran sukses.
