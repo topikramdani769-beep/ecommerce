@@ -78,7 +78,7 @@ class LoginController extends Controller
         }
 
        
-        return route('home');
+        return route('admin.dashboard');
     }
 
     /**

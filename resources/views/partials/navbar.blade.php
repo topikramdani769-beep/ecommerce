@@ -1,251 +1,217 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-    <div class="container">
-        {{-- Logo & Brand --}}
-        <a class="navbar-brand" href="{{ route('home') }}">
-            <i class="bi bi-bag-fill me-2"></i>
-            Sanchéz Dé Laraché 
-        </a>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap" rel="stylesheet">
 
-        {{-- Mobile Toggle --}}
-        <button class="navbar-toggler border-0" type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarMain">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<nav class="navbar navbar-expand-lg navbar-light bape-nav sticky-top">
+    <div class="container-fluid px-lg-5 position-relative">
+        
+        <div id="nav-content-wrapper" class="d-flex w-100 align-items-center">
+            <a class="navbar-brand bape-logo" href="{{ route('home') }}">
+                DE LARACHE
+            </a>
 
-        {{-- Navbar Content --}}
-        <div class="collapse navbar-collapse" id="navbarMain">
-            {{-- Search Form --}}
-            <form class="d-flex mx-auto my-2 my-lg-0" style="max-width: 400px; width: 100%;"
-                  action="{{ route('catalog.index') }}" method="GET">
-                <div class="input-group">
-                    <input type="text" name="q"
-                           class="form-control"
-                           placeholder="Cari produk favoritmu..."
-                           value="{{ request('q') }}">
-                    <button class="btn btn-primary px-3" type="submit">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </div>
-            </form>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-            {{-- Right Menu --}}
-            <ul class="navbar-nav ms-auto align-items-center">
-                {{-- Katalog --}}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('catalog.index') }}">
-                        <i class="bi bi-grid me-1"></i> Katalog
-                    </a>
-                </li>
-
-                @auth
-                    {{-- Wishlist --}}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link position-relative" href="{{ route('wishlist.index') }}">
-                            <i class="bi bi-heart fs-5"></i>
-                            @if(auth()->user()->wishlists()->count() > 0)
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    {{ auth()->user()->wishlists()->count() }}
-                                </span>
-                            @endif
+                        <a class="nav-link" href="{{ route('catalog.index') }}">SEMUA PRODUK</a>
+                    </li>
+                    @foreach($categories as $category)
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('catalog.index', ['category' => $category->slug]) }}">
+                                {{ strtoupper($category->name) }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+
+                <ul class="navbar-nav flex-row align-items-center ms-auto">
+                    {{-- TOMBOL CARI --}}
+                    <li class="nav-item me-3">
+                        <a href="javascript:void(0)" class="nav-link p-0" onclick="toggleSearch()">
+                            <i class="ti ti-search fs-4"></i>
                         </a>
                     </li>
 
-                    {{-- Cart --}}
-                    <li class="nav-item ms-lg-2">
-                        <a class="nav-link position-relative" href="{{ route('cart.index') }}">
-                            <i class="bi bi-cart3 fs-5"></i>
-                            @php
-                                $cartCount = auth()->user()->cart?->items()->count() ?? 0;
-                            @endphp
-                            @if($cartCount > 0)
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-                                    {{ $cartCount }}
-                                </span>
-                            @endif
-                        </a>
-                    </li>
+                    @auth
+                        {{-- WISHLIST --}}
+                        <li class="nav-item me-3">
+                            <a class="nav-link p-0 position-relative" href="{{ route('wishlist.index') }}">
+                                <i class="ti ti-heart fs-4"></i>
+                                @php $wishlistCount = auth()->user()->wishlists()->count() ?? 0; @endphp
+                                @if($wishlistCount > 0)
+                                    <span class="bape-badge">{{ $wishlistCount }}</span>
+                                @endif
+                            </a>
+                        </li>
 
-                    {{-- User Dropdown --}}
-                    <li class="nav-item dropdown ms-lg-3">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center"
-                           href="#" id="userDropdown"
-                           data-bs-toggle="dropdown">
-                            <img src="{{ auth()->user()->avatar_url }}"
-                                 class="rounded-circle me-2 border"
-                                 width="35" height="35"
-                                 style="object-fit: cover;"
-                                 alt="{{ auth()->user()->name }}">
-                            <span class="d-none d-lg-inline fw-semibold text-dark">{{ auth()->user()->name }}</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                    <i class="bi bi-person me-2"></i> Profil Saya
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('orders.index') }}">
-                                    <i class="bi bi-bag me-2"></i> Pesanan Saya
-                                </a>
-                            </li>
-                            @if(auth()->user()->isAdmin())
-                                <li><hr class="dropdown-divider opacity-50"></li>
+                        {{-- KERANJANG --}}
+                        <li class="nav-item me-3">
+                            <a class="nav-link p-0 position-relative" href="{{ route('cart.index') }}">
+                                <i class="ti ti-shopping-cart fs-4"></i>
+                                @php $cartCount = auth()->user()->cart?->items()->count() ?? 0; @endphp
+                                @if($cartCount > 0)
+                                    <span class="bape-badge">{{ $cartCount }}</span>
+                                @endif
+                            </a>
+                        </li>
+
+                        {{-- USER DROPDOWN --}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link p-0" href="#" id="userDropdown" data-bs-toggle="dropdown">
+                                <i class="ti ti-user fs-4"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end bape-dropdown">
+                                {{-- MENU PESANAN SAYA (BARU) --}}
                                 <li>
-                                    <a class="dropdown-item text-primary fw-bold" href="{{ route('admin.dashboard') }}">
-                                        <i class="bi bi-speedometer2 me-2"></i> Admin Panel
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('orders.index') }}">
+                                        <i class="ti ti-package me-2 fs-5"></i> PESANAN SAYA
                                     </a>
                                 </li>
-                            @endif
-                            <li><hr class="dropdown-divider opacity-50"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item text-danger">
-                                        <i class="bi bi-box-arrow-right me-2"></i> Keluar
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                @else
-                    {{-- Guest Links --}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">Masuk</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-primary btn-sm ms-lg-3 rounded-pill px-4" href="{{ route('register') }}">
-                            Daftar
-                        </a>
-                    </li>
-                @endauth
-            </ul>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.edit') }}">
+                                        <i class="ti ti-settings me-2 fs-5"></i> PROFILE
+                                    </a>
+                                </li>
+
+                                @if(auth()->user()->isAdmin())
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item fw-bold text-primary" href="{{ route('admin.dashboard') }}">
+                                            <i class="ti ti-layout-dashboard me-2 fs-5"></i> ADMIN PANEL
+                                        </a>
+                                    </li>
+                                @endif
+
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger d-flex align-items-center">
+                                            <i class="ti ti-logout me-2 fs-5"></i> LOGOUT
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        {{-- TAMPILAN JIKA BELUM LOGIN --}}
+                        <li class="nav-item">
+                            <a class="nav-link p-0 fw-black" href="{{ route('login') }}" style="font-size: 0.75rem;">LOGIN</a>
+                        </li>
+                    @endauth
+                </ul>
+            </div>
         </div>
+
+        {{-- SEARCH OVERLAY --}}
+        <div id="search-overlay" class="search-overlay d-none">
+            <div class="container d-flex align-items-center h-100">
+                <form action="{{ route('catalog.index') }}" method="GET" class="w-100 d-flex align-items-center">
+                    <input type="text" name="search" class="overlay-input" placeholder="CARI PARFUM..." autocomplete="off" id="search-input" value="{{ request('search') }}">
+                    <button type="submit" class="bg-transparent border-0 ms-2 p-0">
+                        <i class="ti ti-search fs-3 text-dark"></i>
+                    </button>
+                    <button type="button" class="bg-transparent border-0 ms-3 p-0" onclick="toggleSearch()">
+                        <i class="ti ti-x fs-3 text-muted"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
     </div>
 </nav>
-
-
 <style>
-    
-    .navbar {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        background-color: rgba(255, 255, 255, 1) !important;
-        padding-top: 15px;
-        padding-bottom: 15px;
+    .bape-nav {
+        background-color: #ffffff !important;
+        border-bottom: 2px solid #000000 !important;
+        padding: 10px 0 !important;
+        text-transform: uppercase;
+        min-height: 70px;
     }
 
-    .navbar.scrolled {
-        padding-top: 8px;
-        padding-bottom: 8px;
-        background-color: rgba(255, 255, 255, 0.85) !important;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05) !important;
+    .bape-logo {
+        font-family: 'Inter', sans-serif;
+        font-weight: 900 !important;
+        font-size: 1.4rem !important;
+        color: #000 !important;
+        letter-spacing: -1px !important;
+        text-decoration: none;
     }
 
-    
-    .navbar-brand {
-        font-weight: 800;
-        font-size: 1.4rem;
-        letter-spacing: -0.5px;
-        background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        transition: transform 0.3s ease;
-    }
-
-    
-    .input-group .form-control {
-        border-radius: 50px 0 0 50px !important;
-        background-color: #f1f3f5;
-        border: 1px solid transparent;
-        padding-left: 20px;
-        transition: all 0.3s ease;
-    }
-
-    .input-group .form-control:focus {
-        background-color: #fff;
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
-    }
-
-    .input-group .btn {
-        border-radius: 0 50px 50px 0 !important;
-        padding-right: 20px;
-        padding-left: 15px;
-    }
-
-    
     .nav-link {
-        font-weight: 600;
-        color: #495057 !important;
-        padding: 0.5rem 1rem !important;
-        position: relative;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem !important;
+        font-weight: 900 !important;
+        color: #000 !important;
+        padding: 0 15px !important;
     }
 
-    .nav-link::after {
-        content: '';
+    .bape-badge {
         position: absolute;
-        width: 0;
-        height: 2px;
-        bottom: 0;
-        left: 50%;
-        background: #0d6efd;
-        transition: all 0.3s ease;
-        transform: translateX(-50%);
+        top: -6px;
+        right: -8px;
+        background: #000;
+        color: #fff;
+        font-size: 0.55rem;
+        width: 16px;
+        height: 16px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 50%;
+        font-weight: 900;
     }
 
-    .nav-link:hover::after { width: 60%; }
-    .nav-link:hover { color: #0d6efd !important; }
-
-    
-    .badge {
-        font-size: 0.65rem !important;
-        padding: 0.4em 0.6em !important;
-        border: 2px solid #fff;
-        animation: badgePulse 2s infinite;
+    .search-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        z-index: 1050;
     }
 
-    @keyframes badgePulse {
-        0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4); }
-        70% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+    .overlay-input {
+        width: 100%;
+        border: none;
+        border-bottom: 2px solid #000;
+        font-size: 1.1rem;
+        font-weight: 900;
+        outline: none;
+        text-transform: uppercase;
+        padding: 5px 0;
+        font-family: 'Inter', sans-serif;
     }
 
-    
-    #userDropdown img {
-        padding: 2px;
-        border: 2px solid #0d6efd;
-        transition: all 0.3s ease;
+    .bape-dropdown {
+        border: 2px solid #000 !important;
+        border-radius: 0 !important;
+        margin-top: 10px !important;
+        padding: 0 !important;
+    }
+    .bape-dropdown .dropdown-item {
+        font-size: 0.7rem;
+        font-weight: 900;
     }
 
-    
-    .dropdown-menu {
-        border-radius: 12px;
-        padding: 10px;
-    }
-
-    .dropdown-item {
-        border-radius: 8px;
-        padding: 10px 15px;
-        transition: all 0.2s;
-    }
-
-    .dropdown-item:hover {
-        background-color: #f8f9fa;
-        color: #0d6efd;
-        transform: translateX(5px);
-    }
+    .invisible { visibility: hidden; opacity: 0; }
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-    });
+    function toggleSearch() {
+        const overlay = document.getElementById('search-overlay');
+        const navWrapper = document.getElementById('nav-content-wrapper');
+        const input = document.getElementById('search-input');
+
+        if (overlay.classList.contains('d-none')) {
+            overlay.classList.remove('d-none');
+            navWrapper.classList.add('invisible');
+            setTimeout(() => { input.focus(); }, 50);
+        } else {
+            overlay.classList.add('d-none');
+            navWrapper.classList.remove('invisible');
+        }
+    }
 </script>

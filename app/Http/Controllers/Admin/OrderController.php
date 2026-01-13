@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/Admin/OrderController.php
 
 namespace App\Http\Controllers\Admin;
 
@@ -11,17 +10,15 @@ class OrderController extends Controller
 {
     /**
      * Menampilkan daftar semua pesanan untuk admin.
-     * Dilengkapi filter by status.
      */
     public function index(Request $request)
     {
         $orders = Order::query()
-            ->with('user') // N+1 prevention: Load data user pemilik order
-            // Fitur Filter Status (?status=pending)
+            ->with('user')
             ->when($request->status, function($q, $status) {
                 $q->where('status', $status);
             })
-            ->latest() // Urutkan terbaru
+            ->latest()
             ->paginate(20);
 
         return view('admin.orders.index', compact('orders'));
@@ -32,45 +29,32 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        // Load item produk dan data user
+        // Memuat item pesanan, produk di dalam item tersebut, dan user yang memesan
         $order->load(['items.product', 'user']);
         return view('admin.orders.show', compact('order'));
     }
 
     /**
-     * Update status pesanan (misal: kirim barang)
-     * Handle otomatis pengembalian stok jika status diubah jadi Cancelled.
+     * Update status pesanan (Fungsi yang dicari oleh routes/web.php)
      */
     public function updateStatus(Request $request, Order $order)
     {
-        // Validasi status yang dikirim form
+        // 1. Validasi Input status
         $request->validate([
-            'status' => 'required|in:processing,shipped,delivered,cancelled'
+            'status' => 'required|in:pending,processing,shipped,delivered,cancelled'
         ]);
 
-        $oldStatus = $order->status;
-        $newStatus = $request->status === 'completed' ? 'delivered' : $request->status;
+        // 2. Simpan status lama untuk pesan log (Opsional)
+        $statusLama = strtoupper($order->status);
+        $statusBaru = strtoupper($request->status);
 
-        // ============================================================
-        // LOGIKA RESTOCK (PENTING!)
-        // ============================================================
-        // Jika admin membatalkan pesanan, stok barang harus dikembalikan ke gudang.
-        // Syarat:
-        // 1. Status baru adalah 'cancelled'
-        // 2. Status lama BUKAN 'cancelled' (agar tidak restock 2x kalau tombol ditekan berkali-kali)
-        // ============================================================
-        if ($newStatus === 'cancelled' && $oldStatus !== 'cancelled') {
-            foreach ($order->items as $item) {
-                // increment() adalah operasi atomik (thread-safe) di level database.
-                // SQL-nya kurang lebih: UPDATE products SET stock = stock + X WHERE id = Y
-                // Ini aman dari Race Condition jika ada transaksi bersamaan.
-                $item->product->increment('stock', $item->quantity);
-            }
-        }
+        // 3. Update status di database
+        $order->update([
+            'status' => $request->status
+        ]);
 
-        // Update status di database
-        $order->update(['status' => $newStatus]);
-
-        return back()->with('success', "Status pesanan diperbarui menjadi $newStatus");
+        // 4. Kembali ke halaman detail dengan pesan sukses gaya De Larache
+        return redirect()->back()
+            ->with('success', "STATUS UPDATED: PESANAN #{$order->order_number} BERUBAH DARI {$statusLama} MENJADI {$statusBaru}");
     }
 }

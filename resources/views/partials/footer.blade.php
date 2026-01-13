@@ -1,103 +1,64 @@
 {{-- ================================================
      FILE: resources/views/partials/footer.blade.php
-     FUNGSI: Footer website (MODERN & ELEGANT VERSION)
+     FUNGSI: BAPE Style Footer (Minimalist & Dark/White)
      ================================================ --}}
 
-<footer class="custom-footer text-light pt-5 pb-3 mt-5">
-    <div class="container">
-        <div class="row g-4">
-            {{-- Brand & Description --}}
-            <div class="col-lg-4 col-md-6">
-                <h5 class="footer-brand mb-3">
-                    <i class="bi bi-bag-fill me-2"></i>Sanchéz Dé Laraché 
-                </h5>
-                <p class="text-secondary pe-lg-5">
-                    Toko online terpercaya dengan berbagai produk pilihan berkualitas tinggi. 
-                    Kami hadir untuk memberikan pengalaman belanja yang mudah, aman, dan berkesan bagi setiap pelanggan.
+<footer class="bape-footer mt-5">
+    <div class="container-fluid px-5">
+        <div class="row pt-5 pb-4">
+            {{-- Brand Section --}}
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <h4 class="bape-brand mb-3">SANCHÉZ DÉ LARACHÉ®</h4>
+                <p class="bape-text-small">
+                    © {{ date('Y') }} NOWHERE Co., Ltd. All rights reserved. <br>
+                    Authentic Streetwear Experience.
                 </p>
-                {{-- Social Media Icons --}}
-                <div class="d-flex gap-3 mt-4">
-                    <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+                {{-- Social Media (Minimalist Text Style) --}}
+                <div class="d-flex gap-3 mt-4 bape-social">
+                    <a href="#">INSTAGRAM</a>
+                    <a href="#">FACEBOOK</a>
+                    <a href="#">X</a>
                 </div>
             </div>
 
-            {{-- Quick Links --}}
-            <div class="col-lg-2 col-md-6">
-                <h6 class="text-white fw-bold mb-4">Menu Utama</h6>
-                <ul class="list-unstyled footer-links">
-                    <li class="mb-2">
-                        <a href="{{ route('catalog.index') }}">Katalog Produk</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#">Tentang Kami</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#">Promo Terbaru</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#">Testimoni</a>
-                    </li>
+            {{-- Links --}}
+            <div class="col-6 col-lg-2">
+                <h6 class="bape-heading">SHOP</h6>
+                <ul class="list-unstyled bape-links">
+                    <li><a href="{{ route('catalog.index') }}">ALL ITEMS</a></li>
+                    <li><a href="#">NEW ARRIVALS</a></li>
+                    <li><a href="#">CATEGORIES</a></li>
                 </ul>
             </div>
 
-            {{-- Help --}}
-            <div class="col-lg-2 col-md-6">
-                <h6 class="text-white fw-bold mb-4">Bantuan</h6>
-                <ul class="list-unstyled footer-links">
-                    <li class="mb-2">
-                        <a href="#">FAQ (Tanya Jawab)</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#">Cara Belanja</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#">Kebijakan Privasi</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#">Syarat & Ketentuan</a>
-                    </li>
+            <div class="col-6 col-lg-2">
+                <h6 class="bape-heading">HELP</h6>
+                <ul class="list-unstyled bape-links">
+                    <li><a href="#">CONTACT</a></li>
+                    <li><a href="#">SHIPPING</a></li>
+                    <li><a href="#">RETURNS</a></li>
                 </ul>
             </div>
 
-            {{-- Contact --}}
-            <div class="col-lg-4 col-md-6">
-                <h6 class="text-white fw-bold mb-4">Hubungi Kami</h6>
-                <ul class="list-unstyled footer-contact">
-                    <li class="d-flex mb-3">
-                        <i class="bi bi-geo-alt-fill text-primary me-3 fs-5"></i>
-                        <span class="text-secondary small">Jl. Cisirung No. 123, Pasawahan, Bandung</span>
-                    </li>
-                    <li class="d-flex mb-3">
-                        <i class="bi bi-telephone-fill text-primary me-3 fs-5"></i>
-                        <span class="text-secondary small">(022) 123-4567 / +62 812 3456 789</span>
-                    </li>
-                    <li class="d-flex mb-3">
-                        <i class="bi bi-envelope-at-fill text-primary me-3 fs-5"></i>
-                        <span class="text-secondary small">hello@sanchezdelarache.com</span>
-                    </li>
-                </ul>
+            <div class="col-lg-4">
+                <h6 class="bape-heading">NEWSLETTER</h6>
+                <p class="bape-text-small mb-3">SUBSCRIBE TO RECEIVE UPDATES ON NEW RELEASES.</p>
+                <div class="input-group bape-newsletter">
+                    <input type="text" class="form-control" placeholder="ENTER EMAIL ADDRESS">
+                    <button class="btn btn-dark rounded-0" type="button">SIGN UP</button>
+                </div>
             </div>
         </div>
 
-        <hr class="my-4 border-secondary opacity-25">
-
-        {{-- Bottom Footer --}}
-        <div class="row align-items-center">
-            <div class="col-md-6 text-center text-md-start">
-                <p class="text-secondary mb-0 small">
-                    &copy; {{ date('Y') }} <span class="fw-bold">Sanchéz Dé Laraché</span>. Made with <i class="bi bi-heart-fill text-danger mx-1"></i> in Bandung.
-                </p>
-            </div>
-            <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
-                <div class="payment-methods">
-                    <span class="text-secondary small me-2">Metode Pembayaran Aman:</span>
-                    {{-- Jika gambar belum ada, ikon ini sebagai placeholder --}}
-                    <i class="bi bi-credit-card-2-back fs-4 text-secondary mx-1"></i>
-                    <i class="bi bi-wallet2 fs-4 text-secondary mx-1"></i>
-                    <i class="bi bi-bank fs-4 text-secondary mx-1"></i>
+        <div class="bape-bottom-bar border-top py-4">
+            <div class="d-flex justify-content-between flex-wrap gap-3">
+                <div class="bape-legal-links">
+                    <a href="#" class="me-3">PRIVACY POLICY</a>
+                    <a href="#" class="me-3">TERMS & CONDITIONS</a>
+                    <a href="#">LEGAL NOTICE</a>
+                </div>
+                <div class="bape-location">
+                    <span class="small fw-bold"><i class="bi bi-globe me-1"></i> INDONESIA / IDR</span>
                 </div>
             </div>
         </div>
@@ -105,69 +66,98 @@
 </footer>
 
 <style>
-    /* --- CUSTOM FOOTER STYLING --- */
-    .custom-footer {
-        background-color: #0f1116; /* Darker more premium background */
-        font-family: 'Inter', sans-serif;
+    /* --- BAPE MINIMALIST FOOTER STYLING --- */
+    .bape-footer {
+        background-color: #ffffff;
+        border-top: 2px solid #000;
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        color: #000;
+        letter-spacing: 0.5px;
     }
 
-    /* Logo Brand di Footer */
-    .footer-brand {
+    .bape-brand {
+        font-weight: 900;
+        font-size: 1.2rem;
+        letter-spacing: -0.5px;
+    }
+
+    .bape-heading {
         font-weight: 800;
-        font-size: 1.5rem;
-        background: linear-gradient(135deg, #3d8bff 0%, #a873ff 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+        text-transform: uppercase;
     }
 
-    /* Links Styling */
-    .footer-links a {
-        color: #adb5bd;
+    .bape-links li {
+        margin-bottom: 8px;
+    }
+
+    .bape-links a {
+        color: #666;
         text-decoration: none;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        transition: color 0.2s ease;
     }
 
-    .footer-links a:hover {
-        color: #3d8bff;
-        padding-left: 8px; /* Animasi bergeser sedikit */
+    .bape-links a:hover {
+        color: #000;
     }
 
-    /* Social Icon Circles */
-    .social-icon {
-        width: 40px;
-        height: 40px;
-        background-color: rgba(255,255,255,0.05);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        color: #adb5bd;
+    .bape-text-small {
+        font-size: 0.7rem;
+        color: #888;
+        line-height: 1.6;
+        text-transform: uppercase;
+    }
+
+    .bape-social a {
+        color: #000;
+        font-weight: 800;
+        font-size: 0.75rem;
         text-decoration: none;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255,255,255,0.1);
+        border-bottom: 1px solid transparent;
     }
 
-    .social-icon:hover {
-        background-color: #3d8bff;
-        color: white;
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(61, 139, 255, 0.4);
+    .bape-social a:hover {
+        border-bottom: 1px solid #000;
     }
 
-    /* Contact Info Icons */
-    .footer-contact i {
-        min-width: 25px;
+    /* Newsletter Box ala BAPE */
+    .bape-newsletter .form-control {
+        border: 1px solid #000;
+        border-radius: 0;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 12px;
     }
 
-    /* Smooth underline for footer headings */
+    .bape-newsletter .form-control:focus {
+        box-shadow: none;
+        border-color: #000;
+    }
+
+    .bape-newsletter .btn {
+        border-radius: 0;
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 0 25px;
+    }
+
+    .bape-legal-links a {
+        font-size: 0.65rem;
+        color: #999;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .bape-bottom-bar {
+        border-color: #eee !important;
+    }
+
+    /* Menghilangkan garis dekorasi dari versi sebelumnya */
     h6::after {
-        content: '';
-        display: block;
-        width: 30px;
-        height: 2px;
-        background: #3d8bff;
-        margin-top: 10px;
-        border-radius: 2px;
+        display: none !important;
     }
 </style>

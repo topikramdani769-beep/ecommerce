@@ -1,8 +1,4 @@
 <?php
-// ================================================
-// FILE: app/Http/Controllers/CatalogController.php
-// FUNGSI: Menangani halaman katalog dan detail produk
-// ================================================
 
 namespace App\Http\Controllers;
 
@@ -12,40 +8,26 @@ use Illuminate\Http\Request;
 
 class CatalogController extends Controller
 {
-    /**
-     * Menampilkan halaman katalog produk.
-     * Mendukung filter: kategori, harga, pencarian, sorting.
-     */
     public function index(Request $request)
     {
-        // ================================================
-        // 1. BASE QUERY
-        // Mulai dengan produk aktif dan ada stok
-        // ================================================
         $query = Product::query()
-            ->with(['category', 'primaryImage']) // Eager load relasi
+            ->with(['category', 'primaryImage'])
             ->active()
             ->inStock();
 
-        // ================================================
-        // 2. FILTER: PENCARIAN
-        // Cari di nama dan deskripsi produk
-        // ================================================
-        if ($request->filled('q')) {
-            $query->search($request->q); // Scope search di Model
+        // PERBAIKAN: Mengganti 'q' menjadi 'search' agar sesuai dengan Navbar
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhere('description', 'LIKE', '%' . $searchTerm . '%');
+            });
         }
 
-        // ================================================
-        // 3. FILTER: KATEGORI
-        // Gunakan slug kategori, bukan ID
-        // ================================================
         if ($request->filled('category')) {
-            $query->byCategory($request->category); // Scope di Model
+            $query->byCategory($request->category);
         }
 
-        // ================================================
-        // 4. FILTER: RENTANG HARGA
-        // ================================================
         if ($request->filled('min_price')) {
             $query->where('price', '>=', $request->min_price);
         }
@@ -53,38 +35,21 @@ class CatalogController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        // ================================================
-        // 5. FILTER: DISKON
-        // Hanya produk yang sedang diskon
-        // ================================================
         if ($request->boolean('on_sale')) {
-            $query->onSale(); // Scope: discount_price < price
+            $query->onSale();
         }
 
-        // ================================================
-        // 6. SORTING
-        // Default: terbaru (newest)
-        // ================================================
         $sort = $request->get('sort', 'newest');
-
         match ($sort) {
             'price_asc'  => $query->orderBy('price', 'asc'),
             'price_desc' => $query->orderBy('price', 'desc'),
             'name_asc'   => $query->orderBy('name', 'asc'),
             'name_desc'  => $query->orderBy('name', 'desc'),
-            default      => $query->latest(), // newest
+            default      => $query->latest(),
         };
 
-        // ================================================
-        // 7. PAGINATION
-        // withQueryString() menjaga parameter filter di URL pagination
-        // ================================================
         $products = $query->paginate(12)->withQueryString();
 
-        // ================================================
-        // 8. DATA SIDEBAR
-        // Kategori untuk filter
-        // ================================================
         $categories = Category::query()
             ->active()
             ->withCount(['activeProducts'])
@@ -95,30 +60,18 @@ class CatalogController extends Controller
         return view('catalog.index', compact('products', 'categories'));
     }
 
-    /**
-     * Menampilkan halaman detail produk.
-     * Menggunakan Route Model Binding dengan slug.
-     */
     public function show(string $slug)
     {
-        // ================================================
-        // CARI PRODUK BERDASARKAN SLUG
-        // Load semua relasi yang dibutuhkan
-        // ================================================
         $product = Product::query()
-            ->with(['category', 'images']) // Load semua gambar
+            ->with(['category', 'images'])
             ->where('slug', $slug)
             ->where('is_active', true)
-            ->firstOrFail(); // 404 jika tidak ditemukan
+            ->firstOrFail();
 
-        // ================================================
-        // PRODUK TERKAIT (RELATED)
-        // Produk lain di kategori yang sama
-        // ================================================
         $relatedProducts = Product::query()
             ->with(['category', 'primaryImage'])
             ->where('category_id', $product->category_id)
-            ->where('id', '!=', $product->id) // Kecuali produk ini
+            ->where('id', '!=', $product->id)
             ->active()
             ->inStock()
             ->take(4)

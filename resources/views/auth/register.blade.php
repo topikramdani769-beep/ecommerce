@@ -1,118 +1,201 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+<style>
+    /* Global Wrapper - Memastikan konten di tengah layar */
+    .auth-page-wrapper {
+        background-color: #ffffff !important;
+        min-height: 100vh;
+        padding: 60px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
+    /* Card Styling - Ramping dan Siku */
+    .bape-card {
+        background: #fff !important;
+        border: none !important;
+        border-radius: 0px !important;
+        box-shadow: none !important;
+        width: 100%;
+        /* KUNCI AGAR TIDAK LEBAR */
+        max-width: 400px; 
+    }
 
-                        <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
+    /* Header */
+    .auth-header {
+        background: transparent !important;
+        color: #000 !important;
+        padding-bottom: 20px;
+        text-align: center;
+        border-bottom: 2px solid #000;
+        margin-bottom: 30px;
+    }
 
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+    .auth-header h2 {
+        font-weight: 900 !important;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+    }
 
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+    .auth-header p {
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+        font-weight: 700;
+        color: #666 !important;
+    }
 
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+    /* Form Labels & Inputs */
+    .form-label {
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.7rem !important;
+        font-weight: 900 !important;
+        color: #000 !important;
+        margin-bottom: 8px;
+    }
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+    .form-control {
+        border-radius: 0px !important;
+        padding: 12px 15px;
+        border: 1px solid #000 !important;
+        font-size: 0.8rem;
+    }
 
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+    .form-control:focus {
+        border-color: #000 !important;
+        box-shadow: none !important;
+        outline: 1px solid #000;
+    }
 
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
+    /* Tombol Utama Hitam */
+    .btn-bape-black {
+        background: #000 !important;
+        border: 1px solid #000 !important;
+        border-radius: 0px !important;
+        padding: 15px;
+        font-weight: 900;
+        color: white !important;
+        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.8rem;
+        transition: 0.3s;
+    }
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+    .btn-bape-black:hover {
+        background: #fff !important;
+        color: #000 !important;
+    }
 
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+    /* Tombol Google */
+    .btn-google-outline {
+        border-radius: 0px !important;
+        border: 1px solid #000 !important;
+        text-transform: uppercase;
+        font-weight: 800;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+        padding: 12px !important;
+        text-decoration: none;
+        color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-                        <div class="row mb-3">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
+    /* Link & Divider */
+    .footer-link {
+        color: #000 !important;
+        text-decoration: underline !important;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        font-weight: 900;
+    }
 
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 25px 0;
+        text-transform: uppercase;
+        font-size: 0.65rem;
+        font-weight: 900;
+    }
 
-                        <div class="row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
-                        </div>
-                        <div class="position-relative my-4">
-                        <hr />
-                        <span
-                            class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted"
-                        >
-                            atau daftar dengan
-                        </span>
-                        </div>
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #000;
+    }
 
-                        {{-- Google Sign-up Button --}}
-                        <div class="d-grid gap-2">
-                        <a href="{{ route('auth.google') }}" class="btn btn-outline-danger btn-lg">
-                            {{-- Google SVG Icon --}}
-                            <svg class="me-2" width="20" height="20" viewBox="0 0 24 24">
-                                <path
-                                    fill="#4285F4"
-                                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                                />
-                                <path
-                                    fill="#34A853"
-                                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                                />
-                                <path
-                                    fill="#FBBC05"
-                                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                                />
-                                <path
-                                    fill="#EA4335"
-                                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                                />
-                            </svg>
-                            Daftar dengan Google
-                        </a>
-                        </div>
+    .divider:not(:empty)::before { margin-right: 1em; }
+    .divider:not(:empty)::after { margin-left: 1em; }
+</style>
 
-                        {{-- Teks login --}}
-                        <p class="mt-4 text-center mb-0">
-                        Sudah punya akun?
-                        <a href="{{ route('login') }}" class="text-decoration-none fw-bold">
-                            Login
-                        </a>
-                        </p>
-                    </form>
-                </div>
+<div class="auth-page-wrapper">
+    <div class="bape-card">
+        <div class="auth-header">
+            <h2>Daftar Akun</h2>
+            <p>Bergabung dengan De Larache</p>
+        </div>
+
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
+
+            <div class="mb-3">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required placeholder="MASUKKAN NAMA LENGKAP">
+                @error('name') <span class="invalid-feedback"><strong>{{ $message }}</strong></span> @enderror
             </div>
+
+            <div class="mb-3">
+                <label class="form-label">Alamat Email</label>
+                <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required placeholder="EMAIL@CONTOH.COM">
+                @error('email') <span class="invalid-feedback"><strong>{{ $message }}</strong></span> @enderror
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Kata Sandi</label>
+                <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required placeholder="MINIMAL 8 KARAKTER">
+                @error('password') <span class="invalid-feedback"><strong>{{ $message }}</strong></span> @enderror
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Konfirmasi Kata Sandi</label>
+                <input type="password" class="form-control" name="password_confirmation" required placeholder="ULANGI KATA SANDI">
+            </div>
+
+            <button type="submit" class="btn btn-bape-black">
+                Daftar Sekarang
+            </button>
+
+            <div class="divider">Atau Daftar Dengan</div>
+
+            <div class="d-grid">
+                <a href="{{ route('auth.google') }}" class="btn btn-google-outline">
+                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="16" class="me-2" style="filter: grayscale(1);">
+                    Akun Google
+                </a>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="small text-muted mb-0 fw-bold" style="text-transform: uppercase; font-size: 0.65rem;">
+                    Sudah punya akun? 
+                    <a href="{{ route('login') }}" class="footer-link">Masuk Di Sini</a>
+                </p>
+            </div>
+        </form>
+
+        <div class="text-center mt-5">
+            <small class="fw-bold" style="text-transform: uppercase; letter-spacing: 1px; font-size: 0.6rem;">
+                &copy; {{ date('Y') }} DE LARACHE.
+            </small>
         </div>
     </div>
 </div>
