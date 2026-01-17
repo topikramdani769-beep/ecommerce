@@ -155,6 +155,12 @@ FUNGSI: Halaman login gaya BAPE (Minimalist Black & White)
         </div>
 
         <div class="card-body p-4 pt-2">
+          {{-- ALERT SUCCESS REGISTRASI --}}
+          @if (session('success'))
+              <div style="background: #000; color: #fff; padding: 15px; margin-bottom: 25px; font-size: 0.7rem; font-weight: 900; text-align: center; text-transform: uppercase; letter-spacing: 2px; border: 1px solid #000;">
+                  {{ session('success') }}
+              </div>
+          @endif
           <form method="POST" action="{{ route('login') }}">
             @csrf
 

@@ -2,91 +2,133 @@
 
 @section('content')
 <style>
+    /* RESET BACKGROUND KE PUTIH/HITAM TEMA DE LARACHE */
     .profile-page-wrapper {
-        background: linear-gradient(135deg, #ff9a44 0%, #fc6076 100%);
+        background-color: #ffffff;
         min-height: 100vh;
-        margin-top: -24px;
-        padding: 30px 0;
-        font-family: 'Segoe UI', sans-serif;
+        padding: 60px 0;
+        font-family: 'Inter', sans-serif;
+        color: #000;
     }
 
-    /* Ukuran container utama dibatasi agar tidak terlalu lebar ke samping */
+    /* CONTAINER UTAMA */
     .profile-container {
         max-width: 1000px; 
     }
 
+    /* JUDUL DENGAN FONT GLITCH */
     .profile-title {
-        color: white;
-        font-weight: 700;
-        font-size: 1.4rem;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        font-family: 'Rubik Glitch', cursive;
+        color: #000;
+        font-weight: 400;
+        font-size: 2.5rem;
+        text-transform: uppercase;
+        border-bottom: 5px solid #000;
+        display: inline-block;
+        margin-bottom: 40px !important;
     }
 
+    /* CARD DENGAN STYLE BRUTALIST (Gaya BAPE/Streetwear) */
     .profile-card {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        border: 3px solid #000 !important;
+        border-radius: 0 !important; /* Kotak tajam */
+        box-shadow: 8px 8px 0px #000; /* Shadow kaku */
         background: #ffffff;
-        height: 100%; /* Menyamakan tinggi card dalam satu baris */
-        display: flex;
-        flex-direction: column;
+        height: 100%;
+        transition: transform 0.2s;
+    }
+
+    .profile-card:hover {
+        transform: translate(-3px, -3px);
+        box-shadow: 11px 11px 0px #ff0000; /* Shadow berubah merah saat hover */
     }
 
     .profile-card .card-header {
-        background: transparent;
-        border-bottom: 1px solid #f0f0f0;
-        color: #fd7e14;
-        font-size: 0.95rem;
-        padding: 12px 20px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-    }
-
-    .profile-card .card-header::before {
-        content: "";
-        width: 3px;
-        height: 14px;
-        background: #fd7e14;
-        margin-right: 10px;
-        border-radius: 10px;
+        background: #000 !important;
+        border-bottom: none;
+        color: #fff !important;
+        font-family: 'Rubik Glitch', cursive;
+        font-size: 1rem;
+        padding: 10px 20px;
+        border-radius: 0 !important;
     }
 
     .profile-card .card-body {
-        padding: 20px !important;
-        flex: 1; /* Mengisi ruang sisa agar tinggi sama */
+        padding: 25px !important;
     }
 
-    /* Rampingkan Form */
+    /* FORM CONTROL STYLE */
     .form-control {
-        font-size: 0.85rem;
-        padding: 8px 12px;
-        border-radius: 8px;
+        font-size: 0.9rem;
+        border: 2px solid #000;
+        border-radius: 0;
+        padding: 10px;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .form-control:focus {
+        border-color: #ff0000;
+        box-shadow: none;
+        outline: none;
     }
 
     .form-label {
         font-size: 0.75rem;
-        font-weight: 700;
-        color: #666;
-        margin-bottom: 4px;
+        font-weight: 900;
+        color: #000;
+        margin-bottom: 5px;
         text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
+    /* BUTTON STYLE DE LARACHE */
     .btn-sanchez {
-        background: linear-gradient(to right, #fd7e14, #ff4500);
-        border: none;
-        color: white;
-        font-weight: 600;
-        font-size: 0.85rem;
-        border-radius: 6px;
-        padding: 7px 18px;
+        background: #000;
+        border: 2px solid #000;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-weight: 900;
+        font-size: 0.8rem;
+        border-radius: 0;
+        padding: 10px 20px;
+        text-transform: uppercase;
         transition: 0.2s;
+        width: 100%;
     }
 
     .btn-sanchez:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 10px rgba(253, 126, 20, 0.2);
-        color: white;
+        background: #ff0000;
+        border-color: #ff0000;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    /* ALERT SUCCESS */
+    .alert-success {
+        background: #000;
+        color: #fff;
+        border: none;
+        border-radius: 0;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    /* HAPUS AKUN SECTION */
+    .delete-section {
+        border: 3px solid #ff0000 !important;
+        background: #fff;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .delete-title {
+        font-family: 'Rubik Glitch', cursive;
+        color: #ff0000;
+    }
+
+    @media (max-width: 768px) {
+        .profile-title { font-size: 1.8rem; }
     }
 </style>
 
@@ -94,64 +136,64 @@
     <div class="container profile-container">
         
         <h2 class="profile-title mb-4">
-            <i class="bi bi-person-circle me-2"></i>Pengaturan Profil
+            PENGATURAN PROFIL
         </h2>
 
         @if (session('success'))
-            <div class="alert alert-success py-2 border-0 shadow-sm mb-4" style="border-radius: 10px; font-size: 0.85rem;">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+            <div class="alert alert-success py-3 shadow mb-4">
+                <i class="ti ti-circle-check me-2"></i>{{ session('success') }}
             </div>
         @endif
 
-        <div class="row g-4">
-            {{-- Baris 1: Informasi Dasar & Foto --}}
+        <div class="row g-5">
+            {{-- Informasi Dasar --}}
             <div class="col-md-6">
                 <div class="card profile-card">
-                    <div class="card-header">Informasi Profil</div>
+                    <div class="card-header">INFO PROFIL</div>
                     <div class="card-body">
                         @include('profile.partials.update-profile-information-form')
                     </div>
                 </div>
             </div>
 
+            {{-- Foto Profil --}}
             <div class="col-md-6">
                 <div class="card profile-card">
-                    <div class="card-header">Foto Profil</div>
+                    <div class="card-header">FOTO PROFIL</div>
                     <div class="card-body text-center">
                         @include('profile.partials.update-avatar-form')
                     </div>
                 </div>
             </div>
 
-            {{-- Baris 2: Keamanan & Akun Terhubung --}}
+            {{-- Keamanan --}}
             <div class="col-md-6">
                 <div class="card profile-card">
-                    <div class="card-header">Keamanan Akun</div>
+                    <div class="card-header">KEAMANAN</div>
                     <div class="card-body">
                         @include('profile.partials.update-password-form')
                     </div>
                 </div>
             </div>
 
+            {{-- Koneksi --}}
             <div class="col-md-6">
                 <div class="card profile-card">
-                    <div class="card-header">Koneksi Akun</div>
+                    <div class="card-header">KONEKSI</div>
                     <div class="card-body">
                         @include('profile.partials.connected-accounts')
                     </div>
                 </div>
             </div>
 
-            {{-- Baris 3: Hapus Akun (Lebar Penuh) --}}
+            {{-- Hapus Akun --}}
             <div class="col-12">
-                <div class="card border-0" style="border-radius: 12px; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255,255,255,0.3) !important;">
-                    <div class="card-body p-3 d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white fw-bold mb-0" style="font-size: 0.9rem;">Hapus Akun</h6>
-                            <p class="text-white small mb-0 opacity-75">Tindakan ini tidak dapat dibatalkan.</p>
-                        </div>
-                        @include('profile.partials.delete-user-form')
+                <div class="delete-section d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="delete-title mb-1">HAPUS AKUN</h6>
+                        <p class="text-dark small mb-0 fw-bold">TINDAKAN INI BERSIFAT PERMANEN!</p>
                     </div>
+                    @include('profile.partials.delete-user-form')
                 </div>
             </div>
         </div>

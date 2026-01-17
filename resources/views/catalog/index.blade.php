@@ -162,9 +162,11 @@
                             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
                         <select name="sort" class="form-select form-select-sm px-3" onchange="this.form.submit()" style="min-width: 150px;">
+                            <option value="best_seller" {{ request('sort') == 'best_seller' ? 'selected' : '' }}>Terlaris</option>
                             <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
                             <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Harga Terendah</option>
                             <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Harga Tertinggi</option>
+                            <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>A-Z</option>
                         </select>
                     </form>
                 </div>

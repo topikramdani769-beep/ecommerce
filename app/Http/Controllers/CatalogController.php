@@ -40,12 +40,14 @@ class CatalogController extends Controller
         }
 
         $sort = $request->get('sort', 'newest');
+
         match ($sort) {
-            'price_asc'  => $query->orderBy('price', 'asc'),
-            'price_desc' => $query->orderBy('price', 'desc'),
-            'name_asc'   => $query->orderBy('name', 'asc'),
-            'name_desc'  => $query->orderBy('name', 'desc'),
-            default      => $query->latest(),
+            'best_seller' => $query->withCount('orderItems')->orderBy('order_items_count', 'desc'),
+            'price_asc'   => $query->orderBy('price', 'asc'),
+            'price_desc'  => $query->orderBy('price', 'desc'),
+            'name_asc'    => $query->orderBy('name', 'asc'),
+            'name_desc'   => $query->orderBy('name', 'desc'),
+            default       => $query->latest(),
         };
 
         $products = $query->paginate(12)->withQueryString();

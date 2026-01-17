@@ -3,22 +3,23 @@
 @section('title', 'De Larache')
 
 @section('content')
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Glitch&family=Pirata+One&display=swap" rel="stylesheet">
+
 <style>
-    /* 1. Global & Reset Styling */
+    /* 1. Global & Reset */
     body {
         background-color: #ffffff;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         color: #000;
-        margin: 0;
-        padding: 0;
+        margin: 0; padding: 0;
         overflow-x: hidden;
     }
 
-    /* 2. Hero Section - UKURAN MAKSIMAL (FULL SCREEN) */
+    /* 2. Hero Section */
     .bape-hero {
         position: relative;
         width: 100%;
-        height: 100vh; /* Mengisi seluruh layar monitor (Full Screen) */
+        height: 100vh;
         background-color: #000;
         overflow: hidden;
     }
@@ -30,99 +31,148 @@
         width: auto; height: auto;
         transform: translate(-50%, -50%);
         object-fit: cover;
+        opacity: 0.7; /* Membuat video agak gelap agar teks menonjol */
     }
 
     .hero-overlay {
         position: absolute;
         bottom: 15%; left: 5%;
         z-index: 2; color: #fff;
-        text-shadow: 0px 4px 20px rgba(0,0,0,0.6);
     }
 
+    /* Judul Hero Rusak */
     .hero-overlay h1 {
-        font-size: 5rem; /* Font diperbesar agar seimbang dengan video */
-        font-weight: 900;
-        text-transform: uppercase; letter-spacing: -4px;
-        line-height: 0.85;
+        font-family: 'Rubik Glitch', cursive;
+        font-size: 6rem;
+        text-transform: uppercase; 
+        line-height: 0.9;
+        margin-bottom: 20px;
+        text-shadow: 5px 5px 0px rgba(255, 0, 0, 0.3); /* Bayangan merah samar */
     }
 
-    /* 3. Product Card Styling */
+    /* 3. Product Section */
     .section-title {
-        border-bottom: 2px solid #000;
+        border-bottom: 3px solid #000;
         padding-bottom: 10px;
         margin-bottom: 30px;
-        font-weight: 900;
+    }
+
+    .section-title h2 {
+        font-family: 'Rubik Glitch', cursive;
+        font-size: 2.5rem;
         text-transform: uppercase;
     }
 
-    .scroll-wrapper { position: relative; display: flex; align-items: center; }
+    .scroll-wrapper { 
+        position: relative; 
+        display: flex; 
+        align-items: center; 
+    }
 
     .product-scroll-container {
         display: flex;
         overflow-x: auto;
         scroll-behavior: smooth;
-        gap: 15px;
+        gap: 20px;
         padding: 10px 0 30px 0;
         scrollbar-width: none; 
-        -ms-overflow-style: none;
     }
     .product-scroll-container::-webkit-scrollbar { display: none; }
 
     .product-card-fixed {
-        flex: 0 0 220px;
-        text-align: left;
+        flex: 0 0 240px;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card-fixed:hover {
+        transform: translateY(-5px);
     }
 
     .product-image-wrapper {
         background-color: #f8f8f8;
-        padding: 20px;
-        margin-bottom: 10px;
-        transition: 0.3s;
+        width: 100%;
+        height: 280px; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
     }
 
     .product-card-fixed:hover .product-image-wrapper {
-        background-color: #f0f0f0;
+        background-color: #ffffff;
+        border: 1px solid #000;
     }
 
     .product-image-wrapper img {
-        width: 100%;
-        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
         mix-blend-mode: multiply;
     }
 
+    /* Nama Produk Rusak */
     .product-name {
-        font-size: 0.75rem;
-        font-weight: 700;
+        font-family: 'Pirata One', cursive;
+        font-size: 1.2rem;
         text-transform: uppercase;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
         color: #000;
-        letter-spacing: 0.5px;
+        min-height: 1.2em; 
+        letter-spacing: 1px;
     }
 
     .product-price {
-        font-size: 0.75rem;
-        color: #666;
-        font-weight: 500;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.85rem;
+        color: #444;
+        font-weight: 900;
     }
 
+    /* Navigasi */
     .scroll-btn {
         position: absolute;
-        width: 40px; height: 40px;
+        width: 45px; height: 45px;
         background: #000; color: #fff;
-        border: none; border-radius: 50%;
-        z-index: 10; opacity: 0.5;
+        border: none; border-radius: 0; /* Kotak agar lebih industrial */
+        z-index: 10; opacity: 0.7;
         cursor: pointer;
         display: flex; align-items: center; justify-content: center;
     }
-    .scroll-btn:hover { opacity: 1; }
-    .btn-prev { left: -20px; }
-    .btn-next { right: -20px; }
+    .scroll-btn:hover { opacity: 1; background: #ff0000; }
 
-    .display-banner-text {
-        letter-spacing: -2px; 
+    /* Tombol Lihat Semua */
+    .btn-glitch-custom {
+        font-family: 'Rubik Glitch', cursive;
+        border: 2px solid #000;
+        padding: 15px 40px;
+        background: transparent;
+        color: #000;
+        text-decoration: none;
+        font-size: 1.2rem;
+        transition: 0.3s;
+    }
+
+    .btn-glitch-custom:hover {
+        background: #000;
+        color: #fff;
+    }
+
+    /* Quote Section - Seram & Megah */
+    .quote-text {
+        font-family: 'Pirata One', cursive;
+        font-size: calc(2rem + 3vw) !important;
         line-height: 1.1;
-        font-weight: 900;
-        text-transform: uppercase;
+        color: #fff;
+        text-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+
+    @media (max-width: 768px) {
+        .hero-overlay h1 { font-size: 3.5rem; }
+        .quote-text { font-size: 2rem !important; }
     }
 </style>
 
@@ -132,22 +182,23 @@
         <source src="{{ asset('assets/videos/BAPE STA™ IS ON THE ROAD AGAIN.mp4') }}" type="video/mp4">
     </video>
     <div class="hero-overlay">
-        <span class="badge bg-white text-dark rounded-0 mb-3 fw-bold px-3">EDISI TERBATAS 2026</span>
+        <span class="badge bg-danger text-white rounded-0 mb-3 fw-bold px-3">EDISI TERBATAS 2026</span>
         <h1>DE LARACHE<br>SIGNATURE</h1>
-        <a href="{{ route('catalog.index') }}" class="btn btn-light rounded-0 fw-bold px-5 py-3 mt-3 shadow-sm">BELI SEKARANG</a>
+        <a href="{{ route('catalog.index') }}" class="btn-glitch-custom" style="background: white;">BELI SEKARANG</a>
     </div>
 </section>
 
 {{-- NEW ARRIVALS SECTION --}}
 <section class="py-5">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-end section-title">
-            <h2 class="mb-0 fw-black">Produk Terbaru</h2>
-            <a href="{{ route('catalog.index') }}" class="text-dark fw-bold text-decoration-none small">LIHAT SEMUA</a>
+        <div class="section-title">
+            <h2 class="mb-0">Produk Terbaru</h2>
         </div>
         
         <div class="scroll-wrapper">
-            <button class="scroll-btn btn-prev" onclick="scrollLeftBtn()"><i class="bi bi-chevron-left"></i></button>
+            <button class="scroll-btn btn-prev" onclick="scrollLeftBtn()">
+                <i class="bi bi-chevron-left"></i>
+            </button>
             
             <div class="product-scroll-container" id="productContainer">
                 @foreach($latestProducts as $product)
@@ -156,7 +207,7 @@
                             <div class="product-image-wrapper">
                                 <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                             </div>
-                            <div class="ps-1">
+                            <div class="product-info">
                                 <p class="product-name">{{ $product->name }}</p>
                                 <p class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
                             </div>
@@ -165,7 +216,15 @@
                 @endforeach
             </div>
 
-            <button class="scroll-btn btn-next" onclick="scrollRightBtn()"><i class="bi bi-chevron-right"></i></button>
+            <button class="scroll-btn btn-next" onclick="scrollRightBtn()">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="view-all-container mt-5 text-center">
+            <a href="{{ route('catalog.index') }}" class="btn-glitch-custom">
+                LIHAT SEMUA PRODUK
+            </a>
         </div>
     </div>
 </section>
@@ -173,18 +232,18 @@
 {{-- SECTION QUOTES --}}
 <section class="py-5 bg-black text-white">
     <div class="container-fluid px-0">
-        <div class="py-5 border-top border-bottom border-white">
+        <div class="py-5 border-top border-bottom border-white" style="background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');">
             <div class="d-flex flex-column align-items-center text-center py-5 px-3">
-                <span class="badge bg-white text-dark rounded-0 mb-4 fw-bold px-3" style="letter-spacing: 3px;">PERINGATAN</span>
+                <span class="badge bg-danger text-white rounded-0 mb-4 fw-bold px-3" style="letter-spacing: 3px;">PERINGATAN</span>
                 
-                <h2 class="display-banner-text mb-3" style="font-size: calc(1.5rem + 3vw); max-width: 1000px;">
+                <h2 class="quote-text mb-3">
                     Visual bisa dimanipulasi,<br>
                     Namun aroma tidak pernah berbohong tentang siapa dirimu.
                 </h2>
                 
-                <p class="lead mb-4" style="letter-spacing: 4px; font-weight: 300; color: #aaa; font-size: 0.9rem;">DE LARACHE — SENI MENGABADIKAN IDENTITAS</p>
+                <p class="lead mb-4" style="letter-spacing: 4px; font-weight: 300; color: #ff0000; font-family: 'Inter'; font-size: 0.8rem;">DE LARACHE — SENI MENGABADIKAN IDENTITAS</p>
                 
-                <a href="{{ route('catalog.index') }}" class="btn btn-outline-light rounded-0 fw-bold px-5 py-3 mt-2" style="transition: 0.5s; letter-spacing: 2px;">
+                <a href="{{ route('catalog.index') }}" class="btn-glitch-custom" style="color: white; border-color: white;">
                     TELUSURI PRODUK
                 </a>
             </div>
@@ -198,17 +257,17 @@
         <div class="row text-center g-5">
             <div class="col-md-4">
                 <div class="mb-3"><i class="bi bi-droplet-half fs-2 text-dark"></i></div>
-                <h6 class="fw-black mb-2" style="letter-spacing: 1px;">INTENSITAS TANPA BATAS</h6>
+                <h6 class="fw-black mb-2" style="font-family: 'Pirata One'; letter-spacing: 1px; font-size: 1.5rem;">INTENSITAS TANPA BATAS</h6>
                 <p class="small text-muted px-lg-4">Diformulasikan dengan kadar esens tertinggi untuk jejak aroma yang mendominasi.</p>
             </div>
             <div class="col-md-4 border-start border-end border-dark">
                 <div class="mb-3"><i class="bi bi-flask fs-2 text-dark"></i></div>
-                <h6 class="fw-black mb-2" style="letter-spacing: 1px;">BAHAN LANGKA</h6>
+                <h6 class="fw-black mb-2" style="font-family: 'Pirata One'; letter-spacing: 1px; font-size: 1.5rem;">BAHAN LANGKA</h6>
                 <p class="small text-muted px-lg-4">Kurasi bahan eksotis dari penjuru dunia untuk karakter yang tiada duanya.</p>
             </div>
             <div class="col-md-4">
                 <div class="mb-3"><i class="bi bi-shield-check fs-2 text-dark"></i></div>
-                <h6 class="fw-black mb-2" style="letter-spacing: 1px;">PROTEKSI MOLEKULER</h6>
+                <h6 class="fw-black mb-2" style="font-family: 'Pirata One'; letter-spacing: 1px; font-size: 1.5rem;">PROTEKSI MOLEKULER</h6>
                 <p class="small text-muted px-lg-4">Kemasan kedap cahaya untuk menjaga kemurnian struktur aroma Anda.</p>
             </div>
         </div>

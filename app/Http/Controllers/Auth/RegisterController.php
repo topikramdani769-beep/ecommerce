@@ -1,91 +1,73 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;                    // Model User untuk berinteraksi dengan tabel users
-use Illuminate\Foundation\Auth\RegistersUsers; // Trait Laravel untuk logic registrasi
-use Illuminate\Support\Facades\Hash;    // Facade Hash untuk enkripsi password
-use Illuminate\Support\Facades\Validator; // Facade Validator untuk validasi input
+use App\Models\User;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request; // <-- TAMBAHKAN INI
 
 class RegisterController extends Controller
 {
-    
     use RegistersUsers;
 
     /**
      * Redirect setelah registrasi berhasil.
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/login'; // <-- UBAH KE /login
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        // Hanya guest (belum login) yang bisa akses form register.
-        // User yang sudah login akan di-redirect ke home.
         $this->middleware('guest');
     }
 
     /**
      * Validasi data registrasi.
-     *
-     * Method ini menentukan aturan validasi untuk input form.
-     *
-     * @param array $data Data dari request
-     * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            // RULES VALIDASI
-
-            'name' => ['required', 'string', 'max:255'],
-            // ↑ Nama wajib, string, maksimal 255 char
-
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            // ↑ unique:users = Cek tabel 'users', kolom 'email'.
-            //   Jika email sudah ada, validasi gagal. PENTING!
-
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            // ↑ confirmed = Laravel akan mencari field bernama 'password_confirmation'
-            //   dan memastikan nilainya SAMA PERSIS dengan field 'password'.
-            //   Biasanya field ini ada di form register: <input name="password_confirmation">
-
         ], [
-            // CUSTOM MESSAGES
-            'name.required'     => 'Nama wajib diisi.',
-            'email.required'    => 'Email wajib diisi.',
-            'email.unique'      => 'Email sudah terdaftar. Gunakan email lain.',
-            'password.min'      => 'Password minimal 8 karakter agar aman.',
+            'name.required'      => 'Nama wajib diisi.',
+            'email.required'     => 'Email wajib diisi.',
+            'email.unique'       => 'Email sudah terdaftar. Gunakan email lain.',
+            'password.min'       => 'Password minimal 8 karakter agar aman.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
     }
 
     /**
      * Buat user baru setelah validasi berhasil.
-     *
-     * Method ini dieksekusi oleh Trait RegistersUsers setelah validasi lolos.
-     *
-     * @param array $data Data valid
-     * @return \App\Models\User Object user baru
      */
     protected function create(array $data): User
     {
-        // ================================================
-        // CREATE USER + HASH PASSWORD
-        // ================================================
         return User::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
-
-            // SECURITY CRITICAL: Password MENDATORY di-hash!
-            // Jangan pernah menyimpan password plaintext.
-            // Hash::make() menggunakan algoritma Bcrypt (default aman).
             'password' => Hash::make($data['password']),
-
-            // Set role default. Pastikan 'customer', jangan 'admin'.
             'role'     => 'customer',
         ]);
+    }
+
+    /**
+     * OVERRIDE: Method ini dijalankan SETELAH user berhasil dibuat.
+     * Kita paksa logout agar user harus login manual.
+     */
+    protected function registered(Request $request, $user)
+    {
+        // Logout otomatis karena Laravel defaultnya langsung login
+        $this->guard()->logout();
+
+        // Redirect ke halaman login dengan pesan sukses
+        return redirect()->route('login')
+            ->with('success', 'REGISTRASI BERHASIL. SILAKAN MASUK KE AKUN ANDA.');
     }
 }

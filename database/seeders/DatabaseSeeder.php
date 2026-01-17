@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Database\Seeders;
 
 use App\Models\Product;
@@ -13,29 +12,34 @@ class DatabaseSeeder extends Seeder
     {
         $this->command->info('🌱 Starting database seeding...');
 
-       
-        User::factory()->create([
-            'name' => 'Administrator',
-            'email' => 'admin@example.com',
-            'role' => 'admin',
-            'email_verified_at' => now(),
-        ]);
-        $this->command->info('✅ Admin user created: admin@example.com');
+        // MENGGUNAKAN firstOrCreate UNTUK MENGHINDARI DUPLIKAT
+        User::firstOrCreate(
+            ['email' => 'admin@example.com'], // Pencarian berdasarkan email
+            [
+                'name' => 'Administrator',
+                'role' => 'admin',
+                'email_verified_at' => now(),
+                'password' => bcrypt('password'), // Pastikan password didefinisikan
+            ]
+        );
+        $this->command->info('✅ Admin user handled: admin@example.com');
 
-        
-        User::factory(10)->create(['role' => 'customer']);
-        $this->command->info('✅ 10 customer users created');
+        // Gunakan count() agar lebih efisien atau cek apakah sudah ada data
+        if (User::where('role', 'customer')->count() === 0) {
+            User::factory(10)->create(['role' => 'customer']);
+            $this->command->info('✅ 10 customer users created');
+        }
 
-        
         $this->call(CategorySeeder::class);
 
-        
-        Product::factory(50)->create();
-        $this->command->info('✅ 50 products created');
+        // Jika tidak ingin produk terus bertambah setiap seed, tambahkan pengecekan count()
+        if (Product::count() === 0) {
+            Product::factory(50)->create();
+            $this->command->info('✅ 50 products created');
 
-        
-        Product::factory(8)->featured()->create();
-        $this->command->info('✅ 8 featured products created');
+            Product::factory(8)->featured()->create();
+            $this->command->info('✅ 8 featured products created');
+        }
 
         $this->command->newLine();
         $this->command->info('📧 Database seeding completed!');
